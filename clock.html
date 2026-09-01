@@ -136,7 +136,7 @@
             background: #0ea5e9;
         }
 
-        /* Preview Viewport Container wrapping tightly to content */
+        /* Preview Viewport Container */
         .preview-viewport {
             flex-grow: 0;
             display: flex;
@@ -151,7 +151,7 @@
             box-shadow: inset 0 2px 8px rgba(0,0,0,0.6);
         }
 
-        /* OBS Mode: Hide editor layout when parameter string exists */
+        /* OBS Mode Switch */
         body.obs-mode {
             background: transparent !important;
         }
@@ -167,7 +167,7 @@
             display: none;
             flex-direction: column;
             align-items: var(--textAlign, center);
-            gap: var(--sectionGap, 10px);
+            gap: 10px;
             padding: 10px;
             background: transparent;
             width: fit-content;
@@ -175,12 +175,11 @@
             filter: drop-shadow(0px 4px 6px rgba(0, 0, 0, 0.6));
         }
 
-        /* Clock Widget Styling (for preview panel) */
         .clock-container {
             display: flex;
             flex-direction: column;
             align-items: var(--textAlign, center);
-            gap: var(--sectionGap, 10px);
+            gap: 10px;
             padding: 10px;
             background: transparent;
             width: fit-content;
@@ -200,15 +199,11 @@
 
         #topSection, #obsTopSection {
             font-family: 'Poppins', sans-serif;
-        }
-        #topSection .clock-item-wrapper, #obsTopSection .clock-item-wrapper {
             font-size: var(--topFontSize, 32px);
         }
 
         #bottomSection, #obsBottomSection {
             font-family: 'Poppins', sans-serif;
-        }
-        #bottomSection .clock-item-wrapper, #obsBottomSection .clock-item-wrapper {
             font-size: var(--bottomFontSize, 24px);
         }
 
@@ -434,13 +429,11 @@
             const obsUrlOutput = document.getElementById("obsUrlOutput");
             const copyObsBtn = document.getElementById("copyObsBtn");
 
-            // 1. Immediately check URL params and apply obs-mode class
             const urlParams = new URLSearchParams(window.location.search);
             if (urlParams.toString().length > 0) {
                 document.body.classList.add('obs-mode');
             }
 
-            // 2. Load values from URL parameters into inputs if present
             if (urlParams.has('tz')) cfgTimezone.value = urlParams.get('tz');
             if (urlParams.has('h12')) cfgUse12Hour.value = urlParams.get('h12');
             if (urlParams.has('sec')) cfgShowSeconds.value = urlParams.get('sec');
@@ -503,4 +496,100 @@
                 document.body.style.setProperty('--bottomFontSize', bottomFontSize + 'px');
 
                 const now = new Date();
-                const time
+                const timeZoneSetting = timezone !== "" ? timezone : undefined;
+                const optionsBase = timeZoneSetting ? { timeZone: timeZoneSetting } : {};
+
+                const dayNumStr = now.toLocaleDateString(undefined, { ...optionsBase, day: 'numeric' });
+                const dayNum = parseInt(dayNumStr, 10);
+                const dateNumWithSuffix = dayNumStr + getOrdinalSuffix(dayNum);
+
+                const elementMap = {
+                    yyyy: now.toLocaleDateString(undefined, { ...optionsBase, year: 'numeric' }),
+                    mm: now.toLocaleDateString(undefined, { ...optionsBase, month: 'short' }),
+                    dd: dateNumWithSuffix,
+                    day: now.toLocaleDateString(undefined, { ...optionsBase, weekday: 'short' }),
+                    time: now.toLocaleTimeString(undefined, { 
+                        ...optionsBase,
+                        hour: '2-digit', 
+                        minute: '2-digit', 
+                        second: showSeconds ? '2-digit' : undefined, 
+                        hour12: use12Hour 
+                    })
+                };
+
+                populateSection(topSection, topSlots, elementMap, enableStroke, enableGradient, gradStart, gradEnd);
+                populateSection(bottomSection, bottomSlots, elementMap, enableStroke, enableGradient, gradStart, gradEnd);
+                
+                populateSection(obsTopSection, topSlots, elementMap, enableStroke, enableGradient, gradStart, gradEnd);
+                populateSection(obsBottomSection, bottomSlots, elementMap, enableStroke, enableGradient, gradStart, gradEnd);
+                
+                updateObsUrl();
+            }
+
+            function populateSection(sectionElement, slots, elementMap, hasStroke, enableGradient, gradStart, gradEnd) {
+                if (!sectionElement) return;
+                
+                let gradVal = 'none';
+                let clipVal = 'border-box';
+                let fillVal = "#ffffff";
+
+                if (enableGradient) {
+                    gradVal = `linear-gradient(90deg, ${gradStart}, ${gradEnd})`;
+                    clipVal = 'text';
+                    fillVal = 'transparent';
+                }
+
+                sectionElement.style.setProperty('--sectionGradient', gradVal);
+                sectionElement.style.setProperty('--bgClip', clipVal);
+                sectionElement.style.setProperty('--textFill', fillVal);
+
+                sectionElement.textContent = '';
+                slots.forEach(key => {
+                    if (elementMap[key]) {
+                        const text = elementMap[key];
+
+                        const wrapper = document.createElement('div');
+                        wrapper.className = 'clock-item-wrapper ' + (hasStroke ? 'has-stroke' : 'no-stroke');
+
+                        if (hasStroke) {
+                            const outlineLayer = document.createElement('div');
+                            outlineLayer.className = 'clock-outline-layer';
+                            outlineLayer.textContent = text;
+                            wrapper.appendChild(outlineLayer);
+                        }
+
+                        const gradientLayer = document.createElement('div');
+                        gradientLayer.className = 'clock-gradient-layer';
+                        gradientLayer.textContent = text;
+                        wrapper.appendChild(gradientLayer);
+
+                        sectionElement.appendChild(wrapper);
+                    }
+                });
+            }
+
+            copyObsBtn.addEventListener('click', () => {
+                obsUrlOutput.select();
+                navigator.clipboard.writeText(obsUrlOutput.value).then(() => {
+                    const originalText = copyObsBtn.textContent;
+                    copyObsBtn.textContent = 'Copied!';
+                    setTimeout(() => {
+                        copyObsBtn.textContent = originalText;
+                    }, 1500);
+                });
+            });
+
+            const inputs = document.querySelectorAll('.config-panel input, .config-panel select');
+            inputs.forEach(input => {
+                if (input !== obsUrlOutput) {
+                    input.addEventListener('input', updateClock);
+                    input.addEventListener('change', updateClock);
+                }
+            });
+
+            updateClock();
+            setInterval(updateClock, 1000);
+        })();
+    </script>
+</body>
+</html>
