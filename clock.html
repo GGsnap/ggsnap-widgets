@@ -3,20 +3,21 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>OBS Clock Widget Configurator</title>
+    <title>OBS Clock Widget</title>
     <link href="https://fonts.googleapis.com/css2?family=Anton&family=Bebas+Neue&family=Bitter:ital,wght@0,600;1,600&family=Cabin:wght@600&family=Cairo:wght@600&family=Catamaran:wght@600&family=Cinzel:wght@600&family=Comfortaa:wght@600&family=Cormorant+Garamond:wght@600&family=Crimson+Text:wght@600&family=Dosis:wght@600&family=Exo+2:wght@600&family=Fira+Sans:wght@600&family=Heebo:wght@600&family=Inconsolata:wght@600&family=Inter:wght@600&family=Josefin+Sans:wght@600&family=Kanit:wght@600&family=Lato:wght@700&family=Libre+Baskerville:wght@700&family=Lobster&family=Lora:wght@600&family=Montserrat:wght@600&family=Mulish:wght@600&family=Noto+Sans:wght@600&family=Nunito:wght@600&family=Open+Sans:wght@600&family=Oswald:wght@600&family=Oxygen:wght@700&family=Pacifico&family=Playfair+Display:wght@600&family=Poppins:wght@600&family=Press+Start+2P&family=Prompt:wght@600&family=Quicksand:wght@600&family=Raleway:wght@600&family=Righteous&family=Roboto:wght@700&family=Roboto+Condensed:wght@700&family=Russo+One&family=Secular+One&family=Signika:wght@600&family=Source+Sans+Pro:wght@600&family=Space+Grotesk:wght@600&family=Titillium+Web:wght@600&family=Ubuntu:wght@700&family=Varela+Round&family=Work+Sans:wght@600&family=Yanone+Kaffeesatz:wght@600&family=Orbitron:wght@700&display=swap" rel="stylesheet">
 
     <style>
         body {
             margin: 0;
             padding: 0;
-            background: #09090b;
+            background: transparent;
             color: #f4f4f5;
             font-family: 'Poppins', sans-serif;
             display: flex;
             justify-content: center;
             align-items: center;
             min-height: 100vh;
+            overflow: hidden;
         }
 
         .page-layout {
@@ -150,7 +151,31 @@
             box-shadow: inset 0 2px 8px rgba(0,0,0,0.6);
         }
 
-        /* Clock Widget Styling */
+        /* OBS Mode: Hide editor layout when widget parameter is triggered */
+        body.obs-mode {
+            background: transparent !important;
+        }
+        body.obs-mode .page-layout {
+            display: none !important;
+        }
+        body.obs-mode .obs-standalone-clock {
+            display: flex !important;
+        }
+
+        /* Standalone OBS Clock Widget Styling */
+        .obs-standalone-clock {
+            display: none;
+            flex-direction: column;
+            align-items: var(--textAlign, center);
+            gap: var(--sectionGap, 10px);
+            padding: 10px;
+            background: transparent;
+            width: fit-content;
+            height: fit-content;
+            filter: drop-shadow(0px 4px 6px rgba(0, 0, 0, 0.6));
+        }
+
+        /* Clock Widget Styling (for preview panel) */
         .clock-container {
             display: flex;
             flex-direction: column;
@@ -173,17 +198,17 @@
             width: 100%;
         }
 
-        #topSection {
+        #topSection, #obsTopSection {
             font-family: 'Poppins', sans-serif;
         }
-        #topSection .clock-item-wrapper {
+        #topSection .clock-item-wrapper, #obsTopSection .clock-item-wrapper {
             font-size: var(--topFontSize, 32px);
         }
 
-        #bottomSection {
+        #bottomSection, #obsBottomSection {
             font-family: 'Poppins', sans-serif;
         }
-        #bottomSection .clock-item-wrapper {
+        #bottomSection .clock-item-wrapper, #obsBottomSection .clock-item-wrapper {
             font-size: var(--bottomFontSize, 24px);
         }
 
@@ -382,10 +407,17 @@
         </div>
     </div>
 
+    <div class="obs-standalone-clock" id="obsStandaloneClock">
+        <div class="clock-section" id="obsTopSection"></div>
+        <div class="clock-section" id="obsBottomSection"></div>
+    </div>
+
     <script>
         (function () {
             const topSection = document.getElementById("topSection");
             const bottomSection = document.getElementById("bottomSection");
+            const obsTopSection = document.getElementById("obsTopSection");
+            const obsBottomSection = document.getElementById("obsBottomSection");
 
             const cfgTimezone = document.getElementById("cfgTimezone");
             const cfgUse12Hour = document.getElementById("cfgUse12Hour");
@@ -401,6 +433,13 @@
             const cfgGradientEnd = document.getElementById("cfgGradientEnd");
             const obsUrlOutput = document.getElementById("obsUrlOutput");
             const copyObsBtn = document.getElementById("copyObsBtn");
+
+            const urlParams = new URLSearchParams(window.location.search);
+            const isObsMode = urlParams.toString().length > 0;
+
+            if (isObsMode) {
+                document.body.classList.add('obs-mode');
+            }
 
             function loadParamsFromURL() {
                 const params = new URLSearchParams(window.location.search);
@@ -468,98 +507,4 @@
 
                 const now = new Date();
                 const timeZoneSetting = timezone !== "" ? timezone : undefined;
-                const optionsBase = timeZoneSetting ? { timeZone: timeZoneSetting } : {};
-
-                const dayNumStr = now.toLocaleDateString(undefined, { ...optionsBase, day: 'numeric' });
-                const dayNum = parseInt(dayNumStr, 10);
-                const dateNumWithSuffix = dayNumStr + getOrdinalSuffix(dayNum);
-
-                const elementMap = {
-                    yyyy: now.toLocaleDateString(undefined, { ...optionsBase, year: 'numeric' }),
-                    mm: now.toLocaleDateString(undefined, { ...optionsBase, month: 'short' }),
-                    dd: dateNumWithSuffix,
-                    day: now.toLocaleDateString(undefined, { ...optionsBase, weekday: 'short' }),
-                    time: now.toLocaleTimeString(undefined, { 
-                        ...optionsBase,
-                        hour: '2-digit', 
-                        minute: '2-digit', 
-                        second: showSeconds ? '2-digit' : undefined, 
-                        hour12: use12Hour 
-                    })
-                };
-
-                populateSection(topSection, topSlots, elementMap, enableStroke, true, enableGradient, gradStart, gradEnd);
-                populateSection(bottomSection, bottomSlots, elementMap, enableStroke, false, enableGradient, gradStart, gradEnd);
-                
-                updateObsUrl();
-            }
-
-            function populateSection(sectionElement, slots, elementMap, hasStroke, isTop, enableGradient, gradStart, gradEnd) {
-                if (!sectionElement) return;
-                
-                let gradVal = 'none';
-                let clipVal = 'border-box';
-                let fillVal = "#ffffff";
-
-                if (enableGradient) {
-                    gradVal = `linear-gradient(90deg, ${gradStart}, ${gradEnd})`;
-                    clipVal = 'text';
-                    fillVal = 'transparent';
-                }
-
-                sectionElement.style.setProperty('--sectionGradient', gradVal);
-                sectionElement.style.setProperty('--bgClip', clipVal);
-                sectionElement.style.setProperty('--textFill', fillVal);
-
-                sectionElement.textContent = '';
-                slots.forEach(key => {
-                    if (elementMap[key]) {
-                        const text = elementMap[key];
-
-                        const wrapper = document.createElement('div');
-                        wrapper.className = 'clock-item-wrapper ' + (hasStroke ? 'has-stroke' : 'no-stroke');
-
-                        if (hasStroke) {
-                            const outlineLayer = document.createElement('div');
-                            outlineLayer.className = 'clock-outline-layer';
-                            outlineLayer.textContent = text;
-                            wrapper.appendChild(outlineLayer);
-                        }
-
-                        const gradientLayer = document.createElement('div');
-                        gradientLayer.className = 'clock-gradient-layer';
-                        gradientLayer.textContent = text;
-                        wrapper.appendChild(gradientLayer);
-
-                        sectionElement.appendChild(wrapper);
-                    }
-                });
-            }
-
-            copyObsBtn.addEventListener('click', () => {
-                obsUrlOutput.select();
-                navigator.clipboard.writeText(obsUrlOutput.value).then(() => {
-                    const originalText = copyObsBtn.textContent;
-                    copyObsBtn.textContent = 'Copied!';
-                    setTimeout(() => {
-                        copyObsBtn.textContent = originalText;
-                    }, 1500);
-                });
-            });
-
-            loadParamsFromURL();
-
-            const inputs = document.querySelectorAll('.config-panel input, .config-panel select');
-            inputs.forEach(input => {
-                if (input !== obsUrlOutput) {
-                    input.addEventListener('input', updateClock);
-                    input.addEventListener('change', updateClock);
-                }
-            });
-
-            updateClock();
-            setInterval(updateClock, 1000);
-        })();
-    </script>
-</body>
-</html>
+                const optionsBase = timeZoneSetting ? { timeZone: time
