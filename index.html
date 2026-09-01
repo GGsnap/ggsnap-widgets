@@ -3,288 +3,160 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Custom Clock Widget</title>
-    <link href="https://fonts.googleapis.com/css2?family=Anton&family=Bebas+Neue&family=Bitter:ital,wght@0,600;1,600&family=Cabin:wght@600&family=Cairo:wght@600&family=Catamaran:wght@600&family=Cinzel:wght@600&family=Comfortaa:wght@600&family=Cormorant+Garamond:wght@600&family=Crimson+Text:wght@600&family=Dosis:wght@600&family=Exo+2:wght@600&family=Fira+Sans:wght@600&family=Heebo:wght@600&family=Inconsolata:wght@600&family=Inter:wght@600&family=Josefin+Sans:wght@600&family=Kanit:wght@600&family=Lato:wght@700&family=Libre+Baskerville:wght@700&family=Lobster&family=Lora:wght@600&family=Montserrat:wght@600&family=Mulish:wght@600&family=Noto+Sans:wght@600&family=Nunito:wght@600&family=Open+Sans:wght@600&family=Oswald:wght@600&family=Oxygen:wght@700&family=Pacifico&family=Playfair+Display:wght@600&family=Poppins:wght@600&family=Press+Start+2P&family=Prompt:wght@600&family=Quicksand:wght@600&family=Raleway:wght@600&family=Righteous&family=Roboto:wght@700&family=Roboto+Condensed:wght@700&family=Russo+One&family=Secular+One&family=Signika:wght@600&family=Source+Sans+Pro:wght@600&family=Space+Grotesk:wght@600&family=Titillium+Web:wght@600&family=Ubuntu:wght@700&family=Varela+Round&family=Work+Sans:wght@600&family=Yanone+Kaffeesatz:wght@600&family=Orbitron:wght@700&display=swap" rel="stylesheet">
+    <title>GGsnap Social Rotator Widget</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600&display=swap" rel="stylesheet">
     <style>
-        body {
+        body, html {
             margin: 0;
             padding: 0;
-            width: 100vw;
-            height: 100vh;
-            background: transparent;
-            color: #ffffff;
-            overflow: hidden;
-            position: relative;
-        }
-
-        .clock-container {
-            position: absolute;
-            display: flex;
-            flex-direction: column;
-            align-items: var(--textAlign, center);
-            gap: var(--sectionGap, 10px);
-            padding: 0px;
-            background: transparent;
-            width: fit-content;
-            filter: var(--extraShadow, drop-shadow(0px 4px 6px rgba(0, 0, 0, 0.6)));
-        }
-
-        .clock-section {
-            display: flex;
-            flex-direction: row;
-            align-items: center;
-            justify-content: var(--justifyAlign, center);
-            gap: var(--itemGap, 6px);
-            white-space: nowrap;
-            width: 100%;
-        }
-
-        #topSection {
-            font-family: var(--topFontFamily, 'Poppins'), sans-serif;
-            opacity: var(--topOpacity, 1);
-        }
-        #topSection .clock-item-wrapper {
-            font-size: var(--topFontSize, 32px);
-        }
-
-        #bottomSection {
-            font-family: var(--bottomFontFamily, 'Poppins'), sans-serif;
-            opacity: var(--bottomOpacity, 1);
-        }
-        #bottomSection .clock-item-wrapper {
-            font-size: var(--bottomFontSize, 24px);
-        }
-
-        .clock-item-wrapper {
-            position: relative;
-            display: inline-block;
-            line-height: 1;
-        }
-
-        .clock-outline-layer {
-            font-size: 1em;
-            font-weight: 600;
-            letter-spacing: 0.5px;
-            line-height: 1;
-            color: #000000;
-            text-shadow: 
-                2px 2px 0px #000, 
-                -2px 2px 0px #000, 
-                2px -2px 0px #000, 
-                -2px -2px 0px #000, 
-                0px 2px 0px #000, 
-                0px -2px 0px #000, 
-                2px 0px 0px #000, 
-                -2px 0px 0px #000;
-        }
-
-        .no-stroke .clock-outline-layer {
-            display: none;
-        }
-
-        .clock-gradient-layer {
-            font-size: 1em;
-            font-weight: 600;
-            letter-spacing: 0.5px;
-            line-height: 1;
-            background: var(--sectionGradient, none);
-            -webkit-background-clip: var(--bgClip, border-box);
-            -webkit-text-fill-color: var(--textFill, #ffffff);
-        }
-
-        .has-stroke .clock-gradient-layer {
-            position: absolute;
-            top: 0;
-            left: 0;
             width: 100%;
             height: 100%;
+            background: transparent;
+            overflow: hidden;
+            font-family: 'Poppins', sans-serif;
+            display: flex;
+            justify-content: center; /* Centers horizontally in the OBS box */
+            align-items: center;     /* Centers vertically in the OBS box */
+        }
+        #fw-widget-wrapper {
+            display: flex;
+            box-sizing: border-box;
+            width: fit-content;
+            height: fit-content;
         }
 
-        .no-stroke .clock-gradient-layer {
-            position: relative;
+        .social-container {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            padding: 12px 24px;
+            background: transparent;
+            width: fit-content;
+            opacity: 0;
         }
+        .social-icon {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: calc(var(--fwFontSize, 28px) * 1.4);
+            height: calc(var(--fwFontSize, 28px) * 1.4);
+            flex-shrink: 0;
+        }
+        .social-icon img {
+            max-width: calc(var(--fwFontSize, 28px) * 1.2);
+            max-height: calc(var(--fwFontSize, 28px) * 1.2);
+            width: auto;
+            height: auto;
+            object-fit: contain;
+            display: block;
+            filter: drop-shadow(0 1px 0 #000) drop-shadow(0 -1px 0 #000) drop-shadow(1px 0 0 #000) drop-shadow(-1px 0 0 #000);
+        }
+        .social-text {
+            font-size: var(--fwFontSize, 28px);
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            line-height: 1;
+            white-space: nowrap;
+            color: #fff;
+            -webkit-text-stroke: 4px #000;
+            paint-order: stroke fill;
+            text-shadow: 0 3px 0 #000, 0 -4px 0 #000, 3px 0 0 #000, -3px 0 0 #000;
+        }
+
+        @keyframes fwSlideInBottom { 0% { opacity: 0; transform: translateY(60px); } 100% { opacity: 1; transform: translateY(0); } }
+        @keyframes fwSlideInTop { 0% { opacity: 0; transform: translateY(-60px); } 100% { opacity: 1; transform: translateY(0); } }
+        @keyframes fwSlideInLeft { 0% { opacity: 0; transform: translateX(-180px); } 100% { opacity: 1; transform: translateX(0); } }
+        @keyframes fwSlideInRight { 0% { opacity: 0; transform: translateX(180px); } 100% { opacity: 1; transform: translateX(0); } }
+
+        @keyframes fwSlideOutBottom { 0% { opacity: 1; transform: translateY(0); } 100% { opacity: 0; transform: translateY(60px); } }
+        @keyframes fwSlideOutTop { 0% { opacity: 1; transform: translateY(0); } 100% { opacity: 0; transform: translateY(-60px); } }
+        @keyframes fwSlideOutLeft { 0% { opacity: 1; transform: translateX(0); } 70% { opacity: 0; transform: translateX(-180px); } }
+        @keyframes fwSlideOutRight { 0% { opacity: 1; transform: translateX(0); } 70% { opacity: 0; transform: translateX(180px); } }
+
+        .anim-in-bottom { animation: fwSlideInBottom 1.2s cubic-bezier(0.25, 1, 0.5, 1) forwards; }
+        .anim-in-top { animation: fwSlideInTop 1.2s cubic-bezier(0.25, 1, 0.5, 1) forwards; }
+        .anim-in-left { animation: fwSlideInLeft 1.2s cubic-bezier(0.25, 1, 0.5, 1) forwards; }
+        .anim-in-right { animation: fwSlideInRight 1.2s cubic-bezier(0.25, 1, 0.5, 1) forwards; }
+
+        .anim-out-bottom { animation: fwSlideOutBottom 1.2s cubic-bezier(0.25, 1, 0.5, 1) forwards; }
+        .anim-out-top { animation: fwSlideOutTop 1.2s cubic-bezier(0.25, 1, 0.5, 1) forwards; }
+        .anim-out-left { animation: fwSlideOutLeft 1.2s cubic-bezier(0.25, 1, 0.5, 1) forwards; }
+        .anim-out-right { animation: fwSlideOutRight 1.2s cubic-bezier(0.25, 1, 0.5, 1) forwards; }
     </style>
 </head>
 <body>
-
-    <div class="clock-container" id="clockContainer">
-        <div class="clock-section" id="topSection"></div>
-        <div class="clock-section" id="bottomSection"></div>
+    <div id="fw-widget-wrapper">
+        <div class="social-container" id="fw-rotator">
+            <div class="social-icon" id="fw-icon"></div>
+            <div class="text-wrapper">
+                <div class="social-text" id="fw-text"></div>
+            </div>
+        </div>
     </div>
 
     <script>
-        window.addEventListener('onWidgetLoad', function (obj) {
-            const fieldData = obj.detail.fieldData;
-            const topSection = document.getElementById("topSection");
-            const bottomSection = document.getElementById("bottomSection");
-            const container = document.getElementById("clockContainer");
+        (function() {
+            const pList = ['twitch', 'kick', 'youtube', 'tiktok', 'cashapp', 'x', 'instagram', 'club'];
+            const params = new URLSearchParams(window.location.search);
+            const rot = document.getElementById('fw-rotator');
+            const ico = document.getElementById('fw-icon');
+            const txt = document.getElementById('fw-text');
+            const wrapper = document.getElementById('fw-widget-wrapper');
 
-            if (fieldData.topFontSize) {
-                document.body.style.setProperty('--topFontSize', fieldData.topFontSize + 'px');
-            }
-            if (fieldData.bottomFontSize) {
-                document.body.style.setProperty('--bottomFontSize', fieldData.bottomFontSize + 'px');
-            }
-            if (fieldData.topFontFamily) {
-                document.body.style.setProperty('--topFontFamily', `'${fieldData.topFontFamily}', sans-serif`);
-            }
-            if (fieldData.bottomFontFamily) {
-                document.body.style.setProperty('--bottomFontFamily', `'${fieldData.bottomFontFamily}', sans-serif`);
-            }
+            const fs = params.get('fontsize') || '28';
+            const rev = params.get('reveal') || 'bottom';
+            const ext = params.get('exit') || 'bottom';
 
-            if (fieldData.topOpacity !== undefined) {
-                document.body.style.setProperty('--topOpacity', fieldData.topOpacity);
-            }
-            if (fieldData.bottomOpacity !== undefined) {
-                document.body.style.setProperty('--bottomOpacity', fieldData.bottomOpacity);
-            }
+            wrapper.style.setProperty('--fwFontSize', fs + 'px');
 
-            const textAlign = fieldData.textAlign || 'center';
-            document.body.style.setProperty('--textAlign', textAlign);
-            
-            let justifyVal = 'center';
-            if (textAlign === 'flex-start') justifyVal = 'flex-start';
-            if (textAlign === 'flex-end') justifyVal = 'flex-end';
-            document.body.style.setProperty('--justifyAlign', justifyVal);
+            const map = {
+                kick: { active: params.get('en_kick') === '1', user: params.get('kick'), icon: "https://i.postimg.cc/TKLphTkd/kick.png" },
+                twitch: { active: params.get('en_twitch') === '1', user: params.get('twitch'), icon: "https://i.postimg.cc/sMk1hbLk/twitch.png" },
+                youtube: { active: params.get('en_youtube') === '1', user: params.get('youtube'), icon: "https://i.postimg.cc/nXyMDN5f/youtube.png" },
+                tiktok: { active: params.get('en_tiktok') === '1', user: params.get('tiktok'), icon: "https://i.postimg.cc/mPvhHKn0/tiktok.png" },
+                cashapp: { active: params.get('en_cashapp') === '1', user: params.get('cashapp'), icon: "https://i.postimg.cc/dhkLDJWq/cashapp.png" },
+                x: { active: params.get('en_x') === '1', user: params.get('x'), icon: "https://i.postimg.cc/fVGk91Fn/twitter.png" },
+                instagram: { active: params.get('en_instagram') === '1', user: params.get('instagram'), icon: "https://i.postimg.cc/CR3dq9tS/instagram.png" },
+                club: { active: params.get('en_club') === '1', user: params.get('club'), icon: "https://i.postimg.cc/LJch1GWG/club.png" }
+            };
 
-            document.body.style.setProperty('--sectionGap', (fieldData.sectionGap !== undefined ? fieldData.sectionGap : 10) + 'px');
-            document.body.style.setProperty('--itemGap', (fieldData.itemGap !== undefined ? fieldData.itemGap : 6) + 'px');
-
-            if (container) {
-                const position = fieldData.screenPosition || 'center';
-                
-                container.style.top = 'auto';
-                container.style.bottom = 'auto';
-                container.style.left = 'auto';
-                container.style.right = 'auto';
-                container.style.transform = 'none';
-
-                switch (position) {
-                    case 'top-left':
-                        container.style.top = '30px';
-                        container.style.left = '30px';
-                        break;
-                    case 'top-center':
-                        container.style.top = '30px';
-                        container.style.left = '50%';
-                        container.style.transform = 'translateX(-50%)';
-                        break;
-                    case 'top-right':
-                        container.style.top = '30px';
-                        container.style.right = '30px';
-                        break;
-                    case 'center-left':
-                        container.style.top = '50%';
-                        container.style.left = '30px';
-                        container.style.transform = 'translateY(-50%)';
-                        break;
-                    case 'center':
-                        container.style.top = '50%';
-                        container.style.left = '50%';
-                        container.style.transform = 'translate(-50%, -50%)';
-                        break;
-                    case 'center-right':
-                        container.style.top = '50%';
-                        container.style.right = '30px';
-                        container.style.transform = 'translateY(-50%)';
-                        break;
-                    case 'bottom-left':
-                        container.style.bottom = '30px';
-                        container.style.left = '30px';
-                        break;
-                    case 'bottom-center':
-                        container.style.bottom = '30px';
-                        container.style.left = '50%';
-                        container.style.transform = 'translateX(-50%)';
-                        break;
-                    case 'bottom-right':
-                        container.style.bottom = '30px';
-                        container.style.right = '30px';
-                        break;
-                }
-            }
-
-            if (fieldData.enableShadow === false) {
-                document.body.style.setProperty('--extraShadow', 'none');
-            } else {
-                document.body.style.setProperty('--extraShadow', 'drop-shadow(0px 4px 6px rgba(0, 0, 0, 0.6))');
-            }
-
-            function updateClock() {
-                const now = new Date();
-
-                const elementMap = {
-                    year: now.toLocaleDateString(undefined, { year: 'numeric' }),
-                    month: now.toLocaleDateString(undefined, { month: 'short' }),
-                    dateNum: now.toLocaleDateString(undefined, { day: 'numeric' }),
-                    dayName: now.toLocaleDateString(undefined, { weekday: 'short' }),
-                    time: now.toLocaleTimeString(undefined, { 
-                        hour: '2-digit', 
-                        minute: '2-digit', 
-                        second: fieldData.showSeconds ? '2-digit' : undefined, 
-                        hour12: fieldData.use12Hour 
-                    })
-                };
-
-                const topSlots = [fieldData.topSlot1, fieldData.topSlot2, fieldData.topSlot3, fieldData.topSlot4];
-                const bottomSlots = [fieldData.bottomSlot1, fieldData.bottomSlot2, fieldData.bottomSlot3, fieldData.bottomSlot4];
-
-                const strokeSetting = fieldData.strokeTarget || "both";
-                const topHasStroke = (strokeSetting === "both" || strokeSetting === "top");
-                const bottomHasStroke = (strokeSetting === "both" || strokeSetting === "bottom");
-
-                populateSection(topSection, topSlots, elementMap, topHasStroke, true);
-                populateSection(bottomSection, bottomSlots, elementMap, bottomHasStroke, false);
-            }
-
-            function populateSection(sectionElement, slots, elementMap, hasStroke, isTop) {
-                if (!sectionElement) return;
-                
-                let gradVal = 'none';
-                let clipVal = 'border-box';
-                let fillVal = isTop ? (fieldData.textColor || "#ffffff") : (fieldData.bottomTextColor || "#ffffff");
-
-                if (fieldData.enableGradient) {
-                    const grad1 = fieldData.gradientColor1 || "#ffffff";
-                    const grad2 = fieldData.gradientColor2 || "#00ffff";
-                    const angle = fieldData.gradientAngle || "90deg";
-                    gradVal = `linear-gradient(${angle}, ${grad1}, ${grad2})`;
-                    clipVal = 'text';
-                    fillVal = 'transparent';
-                }
-
-                sectionElement.style.setProperty('--sectionGradient', gradVal);
-                sectionElement.style.setProperty('--bgClip', clipVal);
-                sectionElement.style.setProperty('--textFill', fillVal);
-
-                sectionElement.innerHTML = '';
-                slots.forEach(key => {
-                    if (key && key !== "none" && elementMap[key]) {
-                        const text = elementMap[key];
-
-                        const wrapper = document.createElement('div');
-                        wrapper.className = 'clock-item-wrapper ' + (hasStroke ? 'has-stroke' : 'no-stroke');
-
-                        if (hasStroke) {
-                            const outlineLayer = document.createElement('div');
-                            outlineLayer.className = 'clock-outline-layer';
-                            outlineLayer.innerText = text;
-                            wrapper.appendChild(outlineLayer);
-                        }
-
-                        const gradientLayer = document.createElement('div');
-                        gradientLayer.className = 'clock-gradient-layer';
-                        gradientLayer.innerText = text;
-                        wrapper.appendChild(gradientLayer);
-
-                        sectionElement.appendChild(wrapper);
+            let socials = [];
+            for (let i = 1; i <= 8; i++) {
+                pList.forEach(k => {
+                    if (params.get('slot_' + k) == i && map[k].active && map[k].user && map[k].user.trim() !== "") {
+                        socials.push({ username: map[k].user, icon: map[k].icon });
                     }
                 });
             }
 
-            updateClock();
-            setInterval(updateClock, 1000);
-        });
+            if (socials.length === 0) {
+                socials = [{ username: "GGsnap Widget Ready", icon: "" }];
+            }
+
+            let idx = 0;
+
+            function updateSocial() {
+                rot.className = 'social-container anim-out-' + ext;
+
+                setTimeout(() => {
+                    const cur = socials[idx];
+                    ico.replaceChildren();
+                    if (cur.icon) {
+                        const img = document.createElement('img');
+                        img.src = cur.icon;
+                        img.alt = 'Logo';
+                        ico.appendChild(img);
+                    }
+                    txt.textContent = cur.username;
+                    rot.className = 'social-container anim-in-' + rev;
+                    idx = (idx + 1) % socials.length;
+                }, 1200);
+            }
+
+            updateSocial();
+            setInterval(updateSocial, 7000);
+        })();
     </script>
 </body>
 </html>
