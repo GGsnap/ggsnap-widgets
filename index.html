@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GGsnap Social Rotator Widget</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600&display=swap" rel="stylesheet">
+    <style>
+        body, html {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            background: transparent;
+            overflow: hidden;
+            font-family: 'Poppins', sans-serif;
+        }
+        #fw-widget-wrapper {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            box-sizing: border-box;
+        }
+        #fw-widget-wrapper.pos-top-left { justify-content: flex-start; align-items: flex-start; }
+        #fw-widget-wrapper.pos-top-center { justify-content: center; align-items: flex-start; }
+        #fw-widget-wrapper.pos-top-right { justify-content: flex-end; align-items: flex-start; }
+        #fw-widget-wrapper.pos-center-left { justify-content: flex-start; align-items: center; }
+        #fw-widget-wrapper.pos-center-right { justify-content: flex-end; align-items: center; }
+        #fw-widget-wrapper.pos-bottom-left { justify-content: flex-start; align-items: flex-end; }
+        #fw-widget-wrapper.pos-bottom-center, #fw-widget-wrapper:not([class*="pos-"]) { justify-content: center; align-items: flex-end; }
+        #fw-widget-wrapper.pos-bottom-right { justify-content: flex-end; align-items: flex-end; }
+
+        .social-container {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            padding: 12px 24px;
+            background: transparent;
+            width: fit-content;
+            opacity: 0;
+            transform: translateY(0);
+        }
+        .social-icon {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: calc(var(--fwFontSize, 28px) * 1.4);
+            height: calc(var(--fwFontSize, 28px) * 1.4);
+            flex-shrink: 0;
+        }
+        .social-icon img {
+            max-width: calc(var(--fwFontSize, 28px) * 1.2);
+            max-height: calc(var(--fwFontSize, 28px) * 1.2);
+            width: auto;
+            height: auto;
+            object-fit: contain;
+            display: block;
+            filter: drop-shadow(0 1px 0 #000) drop-shadow(0 -1px 0 #000) drop-shadow(1px 0 0 #000) drop-shadow(-1px 0 0 #000);
+        }
+        .social-text {
+            font-size: var(--fwFontSize, 28px);
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            line-height: 1;
+            white-space: nowrap;
+            color: #fff;
+            -webkit-text-stroke: 4px #000;
+            paint-order: stroke fill;
+            text-shadow: 0 3px 0 #000, 0 -4px 0 #000, 3px 0 0 #000, -3px 0 0 #000;
+        }
+
+        @keyframes fwSlideInBottom { 0% { opacity: 0; transform: translateY(60px); } 100% { opacity: 1; transform: translateY(0); } }
+        @keyframes fwSlideInTop { 0% { opacity: 0; transform: translateY(-60px); } 100% { opacity: 1; transform: translateY(0); } }
+        @keyframes fwSlideInLeft { 0% { opacity: 0; transform: translateX(-60px); } 100% { opacity: 1; transform: translateX(0); } }
+        @keyframes fwSlideInRight { 0% { opacity: 0; transform: translateX(60px); } 100% { opacity: 1; transform: translateX(0); } }
+
+        @keyframes fwSlideOutBottom { 0% { opacity: 1; transform: translateY(0); } 100% { opacity: 0; transform: translateY(60px); } }
+        @keyframes fwSlideOutTop { 0% { opacity: 1; transform: translateY(0); } 100% { opacity: 0; transform: translateY(-60px); } }
+        @keyframes fwSlideOutLeft { 0% { opacity: 1; transform: translateX(0); } 100% { opacity: 0; transform: translateX(-60px); } }
+        @keyframes fwSlideOutRight { 0% { opacity: 1; transform: translateX(0); } 100% { opacity: 0; transform: translateX(60px); } }
+
+        .anim-in-bottom { animation: fwSlideInBottom 1.2s cubic-bezier(0.25, 1, 0.5, 1) forwards; }
+        .anim-in-top { animation: fwSlideInTop 1.2s cubic-bezier(0.25, 1, 0.5, 1) forwards; }
+        .anim-in-left { animation: fwSlideInLeft 1.2s cubic-bezier(0.25, 1, 0.5, 1) forwards; }
+        .anim-in-right { animation: fwSlideInRight 1.2s cubic-bezier(0.25, 1, 0.5, 1) forwards; }
+
+        .anim-out-bottom { animation: fwSlideOutBottom 1.2s cubic-bezier(0.25, 1, 0.5, 1) forwards; }
+        .anim-out-top { animation: fwSlideOutTop 1.2s cubic-bezier(0.25, 1, 0.5, 1) forwards; }
+        .anim-out-left { animation: fwSlideOutLeft 1.2s cubic-bezier(0.25, 1, 0.5, 1) forwards; }
+        .anim-out-right { animation: fwSlideOutRight 1.2s cubic-bezier(0.25, 1, 0.5, 1) forwards; }
+    </style>
+</head>
+<body>
+    <div id="fw-widget-wrapper" class="pos-bottom-center">
+        <div class="social-container" id="fw-rotator">
+            <div class="social-icon" id="fw-icon"></div>
+            <div class="text-wrapper">
+                <div class="social-text" id="fw-text"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        (function() {
+            const pList = ['twitch', 'kick', 'youtube', 'tiktok', 'cashapp', 'x', 'instagram', 'club'];
+            const params = new URLSearchParams(window.location.search);
+            const wrapper = document.getElementById('fw-widget-wrapper');
+            const rot = document.getElementById('fw-rotator');
+            const ico = document.getElementById('fw-icon');
+            const txt = document.getElementById('fw-text');
+
+            const fs = params.get('fontsize') || '28';
+            const pos = params.get('position') || 'bottom-center';
+            const rev = params.get('reveal') || 'bottom';
+            const ext = params.get('exit') || 'bottom';
+
+            wrapper.className = 'pos-' + pos;
+            wrapper.style.setProperty('--fwFontSize', fs + 'px');
+
+            const map = {
+                kick: { active: params.get('en_kick') === '1', user: params.get('kick'), icon: "https://i.postimg.cc/TKLphTkd/kick.png" },
+                twitch: { active: params.get('en_twitch') === '1', user: params.get('twitch'), icon: "https://i.postimg.cc/sMk1hbLk/twitch.png" },
+                youtube: { active: params.get('en_youtube') === '1', user: params.get('youtube'), icon: "https://i.postimg.cc/nXyMDN5f/youtube.png" },
+                tiktok: { active: params.get('en_tiktok') === '1', user: params.get('tiktok'), icon: "https://i.postimg.cc/mPvhHKn0/tiktok.png" },
+                cashapp: { active: params.get('en_cashapp') === '1', user: params.get('cashapp'), icon: "https://i.postimg.cc/dhkLDJWq/cashapp.png" },
+                x: { active: params.get('en_x') === '1', user: params.get('x'), icon: "https://i.postimg.cc/fVGk91Fn/twitter.png" },
+                instagram: { active: params.get('en_instagram') === '1', user: params.get('instagram'), icon: "https://i.postimg.cc/CR3dq9tS/instagram.png" },
+                club: { active: params.get('en_club') === '1', user: params.get('club'), icon: "https://i.postimg.cc/LJch1GWG/club.png" }
+            };
+
+            let socials = [];
+            for (let i = 1; i <= 8; i++) {
+                pList.forEach(k => {
+                    if (params.get('slot_' + k) == i && map[k].active && map[k].user && map[k].user.trim() !== "") {
+                        socials.push({ username: map[k].user, icon: map[k].icon });
+                    }
+                });
+            }
+
+            if (socials.length === 0) {
+                socials = [{ username: "GGsnap Widget Ready", icon: "" }];
+            }
+
+            let idx = 0;
+
+            function updateSocial() {
+                rot.className = 'social-container anim-out-' + ext;
+
+                setTimeout(() => {
+                    const cur = socials[idx];
+                    ico.replaceChildren();
+                    if (cur.icon) {
+                        const img = document.createElement('img');
+                        img.src = cur.icon;
+                        img.alt = 'Logo';
+                        ico.appendChild(img);
+                    }
+                    txt.textContent = cur.username;
+                    rot.className = 'social-container anim-in-' + rev;
+                    idx = (idx + 1) % socials.length;
+                }, 1200);
+            }
+
+            updateSocial();
+            setInterval(updateSocial, 7000);
+        })();
+    </script>
+</body>
+</html>
