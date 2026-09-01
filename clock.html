@@ -47,6 +47,8 @@
             gap: 12px;
             color: #f4f4f5;
             box-shadow: 0 8px 24px rgba(0,0,0,0.5);
+            max-height: 90vh;
+            overflow-y: auto;
         }
 
         .config-title {
@@ -77,6 +79,8 @@
             font-size: 11px;
             color: #a1a1aa;
             font-weight: 500;
+            display: flex;
+            justify-content: space-between;
         }
 
         .config-panel input, .config-panel select {
@@ -94,6 +98,11 @@
         .config-panel input[type="color"] {
             padding: 2px 6px;
             height: 32px;
+            cursor: pointer;
+        }
+
+        .config-panel input[type="range"] {
+            padding: 0;
             cursor: pointer;
         }
 
@@ -205,6 +214,7 @@
         #bottomSection, #obsBottomSection {
             font-family: 'Poppins', sans-serif;
             font-size: var(--bottomFontSize, 24px);
+            opacity: var(--bottomOpacity, 1);
         }
 
         .clock-item-wrapper {
@@ -357,6 +367,11 @@
                 <input type="number" id="cfgBottomFontSize" name="bsize" value="24">
             </div>
 
+            <div class="config-group">
+                <label>Bottom Row Opacity <span id="opacityValLabel">1.0</span></label>
+                <input type="range" id="cfgBottomOpacity" name="bop" min="0" max="1" step="0.05" value="1">
+            </div>
+
             <div class="config-row">
                 <div class="config-group">
                     <label>Text Outline</label>
@@ -422,6 +437,8 @@
             const cfgBottomSlots = document.getElementById("cfgBottomSlots");
             const cfgTopFontSize = document.getElementById("cfgTopFontSize");
             const cfgBottomFontSize = document.getElementById("cfgBottomFontSize");
+            const cfgBottomOpacity = document.getElementById("cfgBottomOpacity");
+            const opacityValLabel = document.getElementById("opacityValLabel");
             const cfgEnableStroke = document.getElementById("cfgEnableStroke");
             const cfgEnableGradient = document.getElementById("cfgEnableGradient");
             const cfgGradientStart = document.getElementById("cfgGradientStart");
@@ -442,6 +459,7 @@
             if (urlParams.has('bot')) cfgBottomSlots.value = urlParams.get('bot');
             if (urlParams.has('tsize')) cfgTopFontSize.value = urlParams.get('tsize');
             if (urlParams.has('bsize')) cfgBottomFontSize.value = urlParams.get('bsize');
+            if (urlParams.has('bop')) cfgBottomOpacity.value = urlParams.get('bop');
             if (urlParams.has('stroke')) cfgEnableStroke.value = urlParams.get('stroke');
             if (urlParams.has('grad')) cfgEnableGradient.value = urlParams.get('grad');
             if (urlParams.has('gstart')) cfgGradientStart.value = urlParams.get('gstart');
@@ -469,6 +487,7 @@
                 params.set('bot', cfgBottomSlots.value);
                 params.set('tsize', cfgTopFontSize.value);
                 params.set('bsize', cfgBottomFontSize.value);
+                params.set('bop', cfgBottomOpacity.value);
                 params.set('stroke', cfgEnableStroke.value);
                 params.set('grad', cfgEnableGradient.value);
                 params.set('gstart', cfgGradientStart.value);
@@ -486,14 +505,18 @@
                 const bottomSlots = cfgBottomSlots.value.split(',').map(s => s.trim()).filter(Boolean);
                 const topFontSize = cfgTopFontSize.value || 32;
                 const bottomFontSize = cfgBottomFontSize.value || 24;
+                const bottomOpacity = cfgBottomOpacity.value || 1;
                 const enableStroke = cfgEnableStroke.value === "true";
                 const enableGradient = cfgEnableGradient.value === "true";
                 const gradStart = cfgGradientStart.value;
                 const gradEnd = cfgGradientEnd.value;
 
+                if (opacityValLabel) opacityValLabel.textContent = bottomOpacity;
+
                 document.body.style.setProperty('--textAlign', textAlign);
                 document.body.style.setProperty('--topFontSize', topFontSize + 'px');
                 document.body.style.setProperty('--bottomFontSize', bottomFontSize + 'px');
+                document.body.style.setProperty('--bottomOpacity', bottomOpacity);
 
                 const now = new Date();
                 const timeZoneSetting = timezone !== "" ? timezone : undefined;
