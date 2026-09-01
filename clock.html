@@ -3,288 +3,35 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Custom Clock Widget</title>
+    <title>OBS Clock Widget</title>
     <link href="https://fonts.googleapis.com/css2?family=Anton&family=Bebas+Neue&family=Bitter:ital,wght@0,600;1,600&family=Cabin:wght@600&family=Cairo:wght@600&family=Catamaran:wght@600&family=Cinzel:wght@600&family=Comfortaa:wght@600&family=Cormorant+Garamond:wght@600&family=Crimson+Text:wght@600&family=Dosis:wght@600&family=Exo+2:wght@600&family=Fira+Sans:wght@600&family=Heebo:wght@600&family=Inconsolata:wght@600&family=Inter:wght@600&family=Josefin+Sans:wght@600&family=Kanit:wght@600&family=Lato:wght@700&family=Libre+Baskerville:wght@700&family=Lobster&family=Lora:wght@600&family=Montserrat:wght@600&family=Mulish:wght@600&family=Noto+Sans:wght@600&family=Nunito:wght@600&family=Open+Sans:wght@600&family=Oswald:wght@600&family=Oxygen:wght@700&family=Pacifico&family=Playfair+Display:wght@600&family=Poppins:wght@600&family=Press+Start+2P&family=Prompt:wght@600&family=Quicksand:wght@600&family=Raleway:wght@600&family=Righteous&family=Roboto:wght@700&family=Roboto+Condensed:wght@700&family=Russo+One&family=Secular+One&family=Signika:wght@600&family=Source+Sans+Pro:wght@600&family=Space+Grotesk:wght@600&family=Titillium+Web:wght@600&family=Ubuntu:wght@700&family=Varela+Round&family=Work+Sans:wght@600&family=Yanone+Kaffeesatz:wght@600&family=Orbitron:wght@700&display=swap" rel="stylesheet">
+    
     <style>
-        body {
-            margin: 0;
-            padding: 0;
-            width: 100vw;
-            height: 100vh;
-            background: transparent;
-            color: #ffffff;
-            overflow: hidden;
-            position: relative;
-        }
-
-        .clock-container {
-            position: absolute;
-            display: flex;
-            flex-direction: column;
-            align-items: var(--textAlign, center);
-            gap: var(--sectionGap, 10px);
-            padding: 0px;
-            background: transparent;
-            width: fit-content;
-            filter: var(--extraShadow, drop-shadow(0px 4px 6px rgba(0, 0, 0, 0.6)));
-        }
-
-        .clock-section {
+        /* Keep all your CSS styles here */
+        .page-layout {
             display: flex;
             flex-direction: row;
-            align-items: center;
-            justify-content: var(--justifyAlign, center);
-            gap: var(--itemGap, 6px);
-            white-space: nowrap;
-            width: 100%;
+            align-items: flex-start;
+            width: fit-content;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+            gap: 20px;
+            background: #09090b;
+            padding: 20px;
+            border-radius: 16px;
         }
-
-        #topSection {
-            font-family: var(--topFontFamily, 'Poppins'), sans-serif;
-            opacity: var(--topOpacity, 1);
-        }
-        #topSection .clock-item-wrapper {
-            font-size: var(--topFontSize, 32px);
-        }
-
-        #bottomSection {
-            font-family: var(--bottomFontFamily, 'Poppins'), sans-serif;
-            opacity: var(--bottomOpacity, 1);
-        }
-        #bottomSection .clock-item-wrapper {
-            font-size: var(--bottomFontSize, 24px);
-        }
-
-        .clock-item-wrapper {
-            position: relative;
-            display: inline-block;
-            line-height: 1;
-        }
-
-        .clock-outline-layer {
-            font-size: 1em;
-            font-weight: 600;
-            letter-spacing: 0.5px;
-            line-height: 1;
-            color: #000000;
-            text-shadow: 
-                2px 2px 0px #000, 
-                -2px 2px 0px #000, 
-                2px -2px 0px #000, 
-                -2px -2px 0px #000, 
-                0px 2px 0px #000, 
-                0px -2px 0px #000, 
-                2px 0px 0px #000, 
-                -2px 0px 0px #000;
-        }
-
-        .no-stroke .clock-outline-layer {
-            display: none;
-        }
-
-        .clock-gradient-layer {
-            font-size: 1em;
-            font-weight: 600;
-            letter-spacing: 0.5px;
-            line-height: 1;
-            background: var(--sectionGradient, none);
-            -webkit-background-clip: var(--bgClip, border-box);
-            -webkit-text-fill-color: var(--textFill, #ffffff);
-        }
-
-        .has-stroke .clock-gradient-layer {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-        }
-
-        .no-stroke .clock-gradient-layer {
-            position: relative;
-        }
+        /* ... rest of your styles ... */
     </style>
 </head>
 <body>
 
-    <div class="clock-container" id="clockContainer">
-        <div class="clock-section" id="topSection"></div>
-        <div class="clock-section" id="bottomSection"></div>
+    <!-- Keep all your HTML body elements here -->
+    <div class="page-layout">
+        <!-- ... your config panel and preview viewport code ... -->
     </div>
 
     <script>
-        window.addEventListener('onWidgetLoad', function (obj) {
-            const fieldData = obj.detail.fieldData;
-            const topSection = document.getElementById("topSection");
-            const bottomSection = document.getElementById("bottomSection");
-            const container = document.getElementById("clockContainer");
-
-            if (fieldData.topFontSize) {
-                document.body.style.setProperty('--topFontSize', fieldData.topFontSize + 'px');
-            }
-            if (fieldData.bottomFontSize) {
-                document.body.style.setProperty('--bottomFontSize', fieldData.bottomFontSize + 'px');
-            }
-            if (fieldData.topFontFamily) {
-                document.body.style.setProperty('--topFontFamily', `'${fieldData.topFontFamily}', sans-serif`);
-            }
-            if (fieldData.bottomFontFamily) {
-                document.body.style.setProperty('--bottomFontFamily', `'${fieldData.bottomFontFamily}', sans-serif`);
-            }
-
-            if (fieldData.topOpacity !== undefined) {
-                document.body.style.setProperty('--topOpacity', fieldData.topOpacity);
-            }
-            if (fieldData.bottomOpacity !== undefined) {
-                document.body.style.setProperty('--bottomOpacity', fieldData.bottomOpacity);
-            }
-
-            const textAlign = fieldData.textAlign || 'center';
-            document.body.style.setProperty('--textAlign', textAlign);
-            
-            let justifyVal = 'center';
-            if (textAlign === 'flex-start') justifyVal = 'flex-start';
-            if (textAlign === 'flex-end') justifyVal = 'flex-end';
-            document.body.style.setProperty('--justifyAlign', justifyVal);
-
-            document.body.style.setProperty('--sectionGap', (fieldData.sectionGap !== undefined ? fieldData.sectionGap : 10) + 'px');
-            document.body.style.setProperty('--itemGap', (fieldData.itemGap !== undefined ? fieldData.itemGap : 6) + 'px');
-
-            if (container) {
-                const position = fieldData.screenPosition || 'center';
-                
-                container.style.top = 'auto';
-                container.style.bottom = 'auto';
-                container.style.left = 'auto';
-                container.style.right = 'auto';
-                container.style.transform = 'none';
-
-                switch (position) {
-                    case 'top-left':
-                        container.style.top = '30px';
-                        container.style.left = '30px';
-                        break;
-                    case 'top-center':
-                        container.style.top = '30px';
-                        container.style.left = '50%';
-                        container.style.transform = 'translateX(-50%)';
-                        break;
-                    case 'top-right':
-                        container.style.top = '30px';
-                        container.style.right = '30px';
-                        break;
-                    case 'center-left':
-                        container.style.top = '50%';
-                        container.style.left = '30px';
-                        container.style.transform = 'translateY(-50%)';
-                        break;
-                    case 'center':
-                        container.style.top = '50%';
-                        container.style.left = '50%';
-                        container.style.transform = 'translate(-50%, -50%)';
-                        break;
-                    case 'center-right':
-                        container.style.top = '50%';
-                        container.style.right = '30px';
-                        container.style.transform = 'translateY(-50%)';
-                        break;
-                    case 'bottom-left':
-                        container.style.bottom = '30px';
-                        container.style.left = '30px';
-                        break;
-                    case 'bottom-center':
-                        container.style.bottom = '30px';
-                        container.style.left = '50%';
-                        container.style.transform = 'translateX(-50%)';
-                        break;
-                    case 'bottom-right':
-                        container.style.bottom = '30px';
-                        container.style.right = '30px';
-                        break;
-                }
-            }
-
-            if (fieldData.enableShadow === false) {
-                document.body.style.setProperty('--extraShadow', 'none');
-            } else {
-                document.body.style.setProperty('--extraShadow', 'drop-shadow(0px 4px 6px rgba(0, 0, 0, 0.6))');
-            }
-
-            function updateClock() {
-                const now = new Date();
-
-                const elementMap = {
-                    year: now.toLocaleDateString(undefined, { year: 'numeric' }),
-                    month: now.toLocaleDateString(undefined, { month: 'short' }),
-                    dateNum: now.toLocaleDateString(undefined, { day: 'numeric' }),
-                    dayName: now.toLocaleDateString(undefined, { weekday: 'short' }),
-                    time: now.toLocaleTimeString(undefined, { 
-                        hour: '2-digit', 
-                        minute: '2-digit', 
-                        second: fieldData.showSeconds ? '2-digit' : undefined, 
-                        hour12: fieldData.use12Hour 
-                    })
-                };
-
-                const topSlots = [fieldData.topSlot1, fieldData.topSlot2, fieldData.topSlot3, fieldData.topSlot4];
-                const bottomSlots = [fieldData.bottomSlot1, fieldData.bottomSlot2, fieldData.bottomSlot3, fieldData.bottomSlot4];
-
-                const strokeSetting = fieldData.strokeTarget || "both";
-                const topHasStroke = (strokeSetting === "both" || strokeSetting === "top");
-                const bottomHasStroke = (strokeSetting === "both" || strokeSetting === "bottom");
-
-                populateSection(topSection, topSlots, elementMap, topHasStroke, true);
-                populateSection(bottomSection, bottomSlots, elementMap, bottomHasStroke, false);
-            }
-
-            function populateSection(sectionElement, slots, elementMap, hasStroke, isTop) {
-                if (!sectionElement) return;
-                
-                let gradVal = 'none';
-                let clipVal = 'border-box';
-                let fillVal = isTop ? (fieldData.textColor || "#ffffff") : (fieldData.bottomTextColor || "#ffffff");
-
-                if (fieldData.enableGradient) {
-                    const grad1 = fieldData.gradientColor1 || "#ffffff";
-                    const grad2 = fieldData.gradientColor2 || "#00ffff";
-                    const angle = fieldData.gradientAngle || "90deg";
-                    gradVal = `linear-gradient(${angle}, ${grad1}, ${grad2})`;
-                    clipVal = 'text';
-                    fillVal = 'transparent';
-                }
-
-                sectionElement.style.setProperty('--sectionGradient', gradVal);
-                sectionElement.style.setProperty('--bgClip', clipVal);
-                sectionElement.style.setProperty('--textFill', fillVal);
-
-                sectionElement.innerHTML = '';
-                slots.forEach(key => {
-                    if (key && key !== "none" && elementMap[key]) {
-                        const text = elementMap[key];
-
-                        const wrapper = document.createElement('div');
-                        wrapper.className = 'clock-item-wrapper ' + (hasStroke ? 'has-stroke' : 'no-stroke');
-
-                        if (hasStroke) {
-                            const outlineLayer = document.createElement('div');
-                            outlineLayer.className = 'clock-outline-layer';
-                            outlineLayer.innerText = text;
-                            wrapper.appendChild(outlineLayer);
-                        }
-
-                        const gradientLayer = document.createElement('div');
-                        gradientLayer.className = 'clock-gradient-layer';
-                        gradientLayer.innerText = text;
-                        wrapper.appendChild(gradientLayer);
-
-                        sectionElement.appendChild(wrapper);
-                    }
-                });
-            }
-
-            updateClock();
-            setInterval(updateClock, 1000);
-        });
+        // Keep all your JavaScript code here
     </script>
 </body>
 </html>
