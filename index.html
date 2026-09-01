@@ -14,25 +14,16 @@
             background: transparent;
             overflow: hidden;
             font-family: 'Poppins', sans-serif;
+            display: flex;
+            justify-content: flex-start;
+            align-items: flex-end;
         }
         #fw-widget-wrapper {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
             display: flex;
             box-sizing: border-box;
-            padding: 30px; /* Safe boundary padding from screen edges */
+            width: fit-content;
+            height: fit-content;
         }
-        #fw-widget-wrapper.pos-top-left { justify-content: flex-start; align-items: flex-start; }
-        #fw-widget-wrapper.pos-top-center { justify-content: center; align-items: flex-start; }
-        #fw-widget-wrapper.pos-top-right { justify-content: flex-end; align-items: flex-start; }
-        #fw-widget-wrapper.pos-center-left { justify-content: flex-start; align-items: center; }
-        #fw-widget-wrapper.pos-center-right { justify-content: flex-end; align-items: center; }
-        #fw-widget-wrapper.pos-bottom-left { justify-content: flex-start; align-items: flex-end; }
-        #fw-widget-wrapper.pos-bottom-center, #fw-widget-wrapper:not([class*="pos-"]) { justify-content: center; align-items: flex-end; }
-        #fw-widget-wrapper.pos-bottom-right { justify-content: flex-end; align-items: flex-end; }
 
         .social-container {
             display: inline-flex;
@@ -95,7 +86,7 @@
     </style>
 </head>
 <body>
-    <div id="fw-widget-wrapper" class="pos-bottom-center">
+    <div id="fw-widget-wrapper">
         <div class="social-container" id="fw-rotator">
             <div class="social-icon" id="fw-icon"></div>
             <div class="text-wrapper">
@@ -108,17 +99,15 @@
         (function() {
             const pList = ['twitch', 'kick', 'youtube', 'tiktok', 'cashapp', 'x', 'instagram', 'club'];
             const params = new URLSearchParams(window.location.search);
-            const wrapper = document.getElementById('fw-widget-wrapper');
             const rot = document.getElementById('fw-rotator');
             const ico = document.getElementById('fw-icon');
             const txt = document.getElementById('fw-text');
+            const wrapper = document.getElementById('fw-widget-wrapper');
 
             const fs = params.get('fontsize') || '28';
-            const pos = params.get('position') || 'bottom-center';
             const rev = params.get('reveal') || 'bottom';
             const ext = params.get('exit') || 'bottom';
 
-            wrapper.className = 'pos-' + pos;
             wrapper.style.setProperty('--fwFontSize', fs + 'px');
 
             const map = {
