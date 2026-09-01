@@ -151,7 +151,7 @@
             box-shadow: inset 0 2px 8px rgba(0,0,0,0.6);
         }
 
-        /* OBS Mode: Hide editor layout when widget parameter is triggered */
+        /* OBS Mode: Hide editor layout when parameter string exists */
         body.obs-mode {
             background: transparent !important;
         }
@@ -434,28 +434,25 @@
             const obsUrlOutput = document.getElementById("obsUrlOutput");
             const copyObsBtn = document.getElementById("copyObsBtn");
 
+            // 1. Immediately check URL params and apply obs-mode class
             const urlParams = new URLSearchParams(window.location.search);
-            const isObsMode = urlParams.toString().length > 0;
-
-            if (isObsMode) {
+            if (urlParams.toString().length > 0) {
                 document.body.classList.add('obs-mode');
             }
 
-            function loadParamsFromURL() {
-                const params = new URLSearchParams(window.location.search);
-                if (params.has('tz')) cfgTimezone.value = params.get('tz');
-                if (params.has('h12')) cfgUse12Hour.value = params.get('h12');
-                if (params.has('sec')) cfgShowSeconds.value = params.get('sec');
-                if (params.has('align')) cfgTextAlign.value = params.get('align');
-                if (params.has('top')) cfgTopSlots.value = params.get('top');
-                if (params.has('bot')) cfgBottomSlots.value = params.get('bot');
-                if (params.has('tsize')) cfgTopFontSize.value = params.get('tsize');
-                if (params.has('bsize')) cfgBottomFontSize.value = params.get('bsize');
-                if (params.has('stroke')) cfgEnableStroke.value = params.get('stroke');
-                if (params.has('grad')) cfgEnableGradient.value = params.get('grad');
-                if (params.has('gstart')) cfgGradientStart.value = params.get('gstart');
-                if (params.has('gend')) cfgGradientEnd.value = params.get('gend');
-            }
+            // 2. Load values from URL parameters into inputs if present
+            if (urlParams.has('tz')) cfgTimezone.value = urlParams.get('tz');
+            if (urlParams.has('h12')) cfgUse12Hour.value = urlParams.get('h12');
+            if (urlParams.has('sec')) cfgShowSeconds.value = urlParams.get('sec');
+            if (urlParams.has('align')) cfgTextAlign.value = urlParams.get('align');
+            if (urlParams.has('top')) cfgTopSlots.value = urlParams.get('top');
+            if (urlParams.has('bot')) cfgBottomSlots.value = urlParams.get('bot');
+            if (urlParams.has('tsize')) cfgTopFontSize.value = urlParams.get('tsize');
+            if (urlParams.has('bsize')) cfgBottomFontSize.value = urlParams.get('bsize');
+            if (urlParams.has('stroke')) cfgEnableStroke.value = urlParams.get('stroke');
+            if (urlParams.has('grad')) cfgEnableGradient.value = urlParams.get('grad');
+            if (urlParams.has('gstart')) cfgGradientStart.value = urlParams.get('gstart');
+            if (urlParams.has('gend')) cfgGradientEnd.value = urlParams.get('gend');
 
             function getOrdinalSuffix(day) {
                 if (day > 3 && day < 21) return 'th';
@@ -506,5 +503,4 @@
                 document.body.style.setProperty('--bottomFontSize', bottomFontSize + 'px');
 
                 const now = new Date();
-                const timeZoneSetting = timezone !== "" ? timezone : undefined;
-                const optionsBase = timeZoneSetting ? { timeZone: time
+                const time
